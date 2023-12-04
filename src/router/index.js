@@ -72,6 +72,31 @@ export const asyncRoutes = [
   }, */
 
   {
+    path: '/blog',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '博客', icon: 'box-open' },
+    children: [
+      {
+        path: 'categery',
+        name: 'Categery',
+        component: () => import('@/views/blog/category/index'),
+        meta: {
+          title: '分类',
+        },
+      },
+      {
+        path: 'tag',
+        name: 'Tag',
+        component: () => import('@/views/blog/tag/index'),
+        meta: {
+          title: '标签',
+        },
+      },
+    ],
+  },
+
+  {
     path: '/vab',
     component: Layout,
     redirect: 'noRedirect',
