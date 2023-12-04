@@ -55,7 +55,7 @@ module.exports = {
       warnings: true,
       errors: true,
     },
-    after: mockServer(),
+    // after: mockServer(),
   },
   configureWebpack() {
     return {
