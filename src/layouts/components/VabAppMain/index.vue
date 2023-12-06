@@ -9,7 +9,7 @@
     <footer v-show="footerCopyright" class="footer-copyright">
       Copyright
       <vab-icon :icon="['fas', 'copyright']"></vab-icon>
-      vue-admin-better 开源免费版 {{ fullYear }}
+      tuple-blog-admin {{ fullYear }}
     </footer>
   </div>
 </template>

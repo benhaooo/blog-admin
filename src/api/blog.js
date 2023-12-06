@@ -61,10 +61,11 @@ export function updateTag(data) {
 }
 
 // 文章
-export function getArticleList() {
+export function getArticleList(condition) {
   return request({
-    url: '/article/admin/list',
+    url: '/article/admin/list/condition',
     method: 'get',
+    params: condition,
   })
 }
 export function delArticle(id) {

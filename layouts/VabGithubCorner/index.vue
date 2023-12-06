@@ -2,7 +2,7 @@
   <a
     aria-label="View source on Github"
     class="github-corner"
-    href="https://github.com/chuzhixin/vue-admin-beautiful"
+    href="https://gitee.com/benhaooo/blog-admin"
     target="_blank"
   >
     <svg

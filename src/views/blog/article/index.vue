@@ -1,8 +1,15 @@
 <template>
   <div class="article-container">
     <el-form :inline="true">
-      <el-form-item label="分类名称">
-        <el-input clearable placeholder="请输入分类名称" style="width: 200px" />
+      <el-form-item label="分类">
+        <el-select v-model="condition.categoryId" placeholder="请选择分类">
+          <el-option v-for="category in categoryList" :key="category.id" :label="category.name" :value="category.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="标签">
+        <el-select v-model="condition.tagId" placeholder="请选择标签">
+          <el-option v-for="tag in tagList" :key="tag.id" :label="tag.name" :value="tag.id" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button icon="Search" type="primary">搜索</el-button>
@@ -17,14 +24,28 @@
     </el-row>
 
     <el-table v-loading="loading" border :data="articleList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" type="selection" />
       <el-table-column align="center" label="标题" prop="title" />
-      <el-table-column align="center" label="分类" prop="category" />
-      <el-table-column align="center" label="标签" prop="category" />
-      <el-table-column align="center" label="浏览量" prop="category" />
-      <el-table-column align="center" label="点赞量" prop="category" />
-      <el-table-column align="center" label="封面" prop="category" />
-      <el-table-column align="center" label="评论数" prop="articleCount" />
+      <el-table-column align="center" label="分类" prop="category" width="120">
+        <template slot-scope="scope">
+          <el-select v-model="scope.row.categoryId" placeholder="请选择">
+            <el-option v-for="category in categoryList" :key="category.id" :label="category.name" :value="category.id" />
+          </el-select>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="标签" prop="tag">
+        <template slot-scope="scope">
+          <el-tag v-for="tag in scope.row.tags" :key="tag.id" :type="tag.type">{{ tag.name }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="封面" prop="thumbnail" width="120">
+        <template slot-scope="scope">
+          <img height="100" :src="scope.row.thumbnail" width="100" />
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="浏览量" prop="viewCount" />
+      <el-table-column align="center" label="点赞量" prop="likeCount" />
+      <el-table-column align="center" label="评论数" prop="likeCount" />
       <el-table-column align="center" label="创建时间" prop="createTime" width="300" />
       <el-table-column align="center" label="操作" width="300">
         <template #default="scope">
@@ -56,17 +77,22 @@
 <script setup>
   import Vue from 'vue'
   import { ref, reactive, toRefs, onMounted } from 'vue'
-  import { getArticleList, delArticle, insertArticle, updateArticle } from '@/api/blog'
+  import { getArticleList, delArticle, insertArticle, updateArticle, getTagList, getCategoryList } from '@/api/blog'
 
   const data = reactive({
     loading: false,
     articleList: [],
+    tagList: [],
+    categoryList: [],
     articleForm: {},
     dialogTitle: '',
     showDialog: false,
+    condition: {},
   })
 
-  const { loading, articleList, articleForm, dialogTitle, showDialog } = toRefs(data)
+  const { loading, articleList, tagList, categoryList, articleForm, dialogTitle, showDialog, condition } = toRefs(data)
+  condition.value.current = 1
+  condition.value.size = 20
 
   const categoryFormRef = ref(null)
 
@@ -76,8 +102,14 @@
   })
 
   const getList = () => {
-    getArticleList().then((res) => {
+    getArticleList(condition.value).then((res) => {
       articleList.value = res.data.rows
+      getTagList().then((res) => {
+        tagList.value = res.data
+        getCategoryList().then((res) => {
+          categoryList.value = res.data
+        })
+      })
     })
   }
 
